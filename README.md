@@ -26,7 +26,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 use function BenTools\StringCombinations\string_combinations;
 
 foreach (string_combinations('abc') as $combination) { // Can also be string_combinations(['a', 'b', 'c'])
-    echo $combination . PHP_EOL;
+    echo join("", $combination) . PHP_EOL;
 }
 ```
 
@@ -93,7 +93,7 @@ var_dump(count(string_combinations('abc'))); // 39
 
 ```php
 foreach (string_combinations('abc', $min = 2, $max = 2) as $combination) {
-    echo $combination . PHP_EOL;
+    echo implode('', $combination) . PHP_EOL;
 }
 ```
 
@@ -110,10 +110,10 @@ cb
 cc
 ```
 
-**Using an array as first argument, and a separator**
+**Using an array as first argument, and a callback function to process each combination**
 
 ```php
-foreach (string_combinations(['woof', 'meow', 'roar'], 2, 3, '-') as $combination) {
+foreach (string_combinations(['woof', 'meow', 'roar'], 2, 3, function($combinación) { return join('-', $combinación); }) as $combination) {
     echo $combination . PHP_EOL;
 }
 ```

@@ -8,12 +8,12 @@ require_once __DIR__ . '/StringCombinations.php';
  * @param $charset
  * @param int      $min
  * @param int|null $max
- * @param string   $glue
+ * @param callable   $callback
  * @return StringCombinations
  */
-function string_combinations($charset, $min = 1, $max = null, $glue = '')
+function string_combinations($charset, $min = 1, $max = null, $callback=NULL)
 {
-    return new StringCombinations($charset, $min, $max, $glue);
+    return new StringCombinations($charset, $min, $max, $callback);
 }
 
 /**

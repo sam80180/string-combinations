@@ -5,7 +5,7 @@ namespace BenTools\StringCombinations;
 use Countable;
 use IteratorAggregate;
 
-final class NoDuplicateLettersStringCombinations implements IteratorAggregate, Countable
+class NoDuplicateLettersStringCombinations implements IteratorAggregate, Countable
 {
     /**
      * @var StringCombinations
@@ -27,7 +27,7 @@ final class NoDuplicateLettersStringCombinations implements IteratorAggregate, C
     {
         for ($i = $this->stringCombinations->min; $i <= $this->stringCombinations->max; $i++) {
             foreach ($this->permute($this->stringCombinations->charset, $i) as $combination) {
-                yield implode($this->stringCombinations->glue, $combination);
+                yield (is_callable($this->stringCombinations->callback) ? call_user_func_array($this->stringCombinations->callback, [$combination]) : $combination);
             }
         }
     }
@@ -123,7 +123,7 @@ final class NoDuplicateLettersStringCombinations implements IteratorAggregate, C
             $string[] = array_shift($charset);
         }
 
-        return implode($this->stringCombinations->glue, $string);
+        return (is_callable($this->stringCombinations->callback) ? call_user_func_array($this->stringCombinations->callback, [$string]) : $string);
     }
 
     /**
@@ -134,3 +134,4 @@ final class NoDuplicateLettersStringCombinations implements IteratorAggregate, C
         return iterator_to_array($this);
     }
 }
+

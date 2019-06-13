@@ -10,9 +10,9 @@ use IteratorAggregate;
  * @property $min
  * @property $max
  * @property $charset
- * @property $glue
+ * @property $callback
  */
-final class StringCombinations implements IteratorAggregate, Countable
+class StringCombinations implements IteratorAggregate, Countable
 {
     /**
      * @var string[]
@@ -35,19 +35,19 @@ final class StringCombinations implements IteratorAggregate, Countable
     private $count;
 
     /**
-     * @var string
+     * @var callable
      */
-    private $glue;
+    private $callback;
 
     /**
      * StringCombination constructor.
      * @param mixed  $charset
      * @param int    $min
      * @param int    $max
-     * @param string $glue
+     * @param callable $callback
      * @throws \InvalidArgumentException
      */
-    public function __construct($charset, $min = 1, $max = null, $glue = '')
+    public function __construct($charset, $min = 1, $max = null, $callback=NULL)
     {
         if (is_string($charset) || is_int($charset)) {
             $this->charset = preg_split('/(?<!^)(?!$)/u', $charset);
@@ -61,7 +61,7 @@ final class StringCombinations implements IteratorAggregate, Countable
         $this->min = (int) $min;
         $length = count($this->charset);
         $this->max = null === $max ? $length : min((int) $max, $this->charset);
-        $this->glue = $glue;
+        $this->callback = $callback;
     }
 
     /**
@@ -92,7 +92,7 @@ final class StringCombinations implements IteratorAggregate, Countable
     {
         foreach ($this->generateSets() as $set) {
             foreach (cartesian_product($set) as $combination) {
-                yield implode($this->glue, $combination);
+                yield (is_callable($this->callback) ? call_user_func_array($this->callback, [$combination]) : $combination);
             }
         }
     }
@@ -109,7 +109,7 @@ final class StringCombinations implements IteratorAggregate, Countable
             shuffle($charset);
             $str[] = $charset[0];
         }
-        return implode($this->glue, $str);
+        return (is_callable($this->callback) ? call_user_func_array($this->callback, [$str]) : $str);
     }
 
     /**
